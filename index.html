@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>המשחקים של אווה</title>
 <style>
-img[data-instinct-loading]{background:linear-gradient(90deg,var(--ds-hairline,#eae9ea) 25%,var(--ds-page,#fbfafa) 50%,var(--ds-hairline,#eae9ea) 75%);background-size:200% 100%;animation:instinct-image-loading 1.6s ease-in-out infinite;color:transparent}@keyframes instinct-image-loading{to{background-position:-200% 0}}@media(prefers-reduced-motion:reduce){img[data-instinct-loading]{animation:none}}
-html,body,#root{position:static!important;height:auto!important;overflow:visible!important;overflow-x:clip!important;overscroll-behavior:auto!important}
-html[data-instinct-modal-viewport] dialog:modal{position:fixed!important;top:var(--instinct-modal-top)!important;bottom:var(--instinct-modal-bottom)!important;max-height:var(--instinct-modal-height)!important;margin-top:auto!important;margin-bottom:auto!important}html[data-instinct-modal-ack][data-instinct-modal-pending] dialog:modal,html[data-instinct-modal-ack][data-instinct-modal-pending] dialog:modal::backdrop{opacity:0!important;pointer-events:none!important}
-/* ../../opt/files/kit/design.css */
 *,
 :after,
 :before {
@@ -685,85 +681,17 @@ body {
 .draggable-region {
   display: none;
 }
-@font-face {
-  font-family: GT America;
-  src: url("blob:null/2409a705-7ca2-4a54-91a4-fd0d302cf47a") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: GT America;
-  src: url("blob:null/3b9dc116-2b8d-4826-b96c-e84aa5228013") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: GT America;
-  src: url("blob:null/1949fe8c-f4a9-4cf1-9b18-b6ad76ce817b") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: Season Mix;
-  src: url("blob:null/fd116012-c898-4b01-9e0e-c5e6fdbeee2f") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  font-feature-settings: "ss03", "ss06";
-}
-@font-face {
-  font-family: Season Mix;
-  src: url("blob:null/f311b136-2413-4422-81f9-489abb71c26c") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-  font-feature-settings: "ss03", "ss06";
-}
-@font-face {
-  font-family: Aime;
-  src: url("blob:null/2599534a-4f38-4a31-9b61-06b83db049eb") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: Aime;
-  src: url("blob:null/d949bad2-7431-4cdf-bcc7-1588e4f82a97") format("woff2");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: KMR Melange Grotesk;
-  src: url("blob:null/e94c27b6-a098-4845-a394-4d195b8fb1a3") format("truetype");
-  font-weight: 350;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: KMR Melange Grotesk;
-  src: url("blob:null/9f887614-846f-43fa-8a82-2c9764440369") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: KMR Melange Grotesk;
-  src: url("blob:null/dccf4176-c962-4f88-b8b0-2ed671a94ed6") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: KMR Melange Grotesk;
-  src: url("blob:null/8a6be44b-87ab-4299-afaf-6ebf3e6c9c90") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
+
+
+
+
+
+
+
+
+
+
+
 :root {
   --ds-page:#fbfaf9;
   --ds-raised:#f4efec;
@@ -937,13 +865,7 @@ body {
 .dark .hover\:text-black:hover {
   color: hsl(var(--foreground));
 }
-@font-face {
-  font-family: Aime;
-  src: url("blob:null/47eaca36-b99c-429c-85c3-7bfb9a1b22e9") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+
 .hover\:scale-105:hover {
   --tw-scale-x:1.05;
   --tw-scale-y:1.05;
@@ -1092,7 +1014,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ../../opt/files/kit/library.css */
+
 :root {
   --file-shadow: 0 1px 2px rgb(37 31 33 / 6%), 0 6px 18px rgb(37 31 33 / 5%);
   --file-pad-x: 24px;
@@ -4293,11 +4215,32 @@ body {
 }
 /*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/
 
-body:has(> #root > .artifact-card){background:transparent}body:has(> #root > .artifact-card)>#root{padding:0}#root>.artifact-card{border-radius:0;box-shadow:none;background:transparent}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<script>
+(() => {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  const routeSegments = segments.length > 0 ? segments.slice(1) : [];
+  const keyPrefix = 'eva-alef-beit:';
+  window.evaStandalone = {
+    initialRoute: '/' + routeSegments.join('/'),
+    route() {},
+    async request(type, payload) {
+      if (type === 'local.read') {
+        const value = window.localStorage.getItem(keyPrefix + payload.key);
+        return value === null ? {status: 'saved'} : {status: 'saved', value};
+      }
+      if (type === 'local.write') {
+        window.localStorage.setItem(keyPrefix + payload.key, payload.value);
+        return {status: 'saved'};
+      }
+      return {status: 'unknown'};
+    }
+  };
+})();
+</script>
 <script src="./main.js"></script>
 </body>
 </html>

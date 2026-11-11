@@ -25,9 +25,9 @@
     mod
   ));
 
-  // ../../opt/files/node_modules/react/cjs/react.production.min.js
+  // bundled/node_modules/react/cjs/react.production.min.js
   var require_react_production_min = __commonJS({
-    "../../opt/files/node_modules/react/cjs/react.production.min.js"(exports) {
+    "bundled/node_modules/react/cjs/react.production.min.js"(exports) {
       "use strict";
       var l2 = /* @__PURE__ */ Symbol.for("react.element");
       var n = /* @__PURE__ */ Symbol.for("react.portal");
@@ -298,9 +298,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react/index.js
+  // bundled/node_modules/react/index.js
   var require_react = __commonJS({
-    "../../opt/files/node_modules/react/index.js"(exports, module) {
+    "bundled/node_modules/react/index.js"(exports, module) {
       "use strict";
       if (true) {
         module.exports = require_react_production_min();
@@ -310,9 +310,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/scheduler/cjs/scheduler.production.min.js
+  // bundled/node_modules/scheduler/cjs/scheduler.production.min.js
   var require_scheduler_production_min = __commonJS({
-    "../../opt/files/node_modules/scheduler/cjs/scheduler.production.min.js"(exports) {
+    "bundled/node_modules/scheduler/cjs/scheduler.production.min.js"(exports) {
       "use strict";
       function f2(a, b) {
         var c = a.length;
@@ -563,9 +563,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/scheduler/index.js
+  // bundled/node_modules/scheduler/index.js
   var require_scheduler = __commonJS({
-    "../../opt/files/node_modules/scheduler/index.js"(exports, module) {
+    "bundled/node_modules/scheduler/index.js"(exports, module) {
       "use strict";
       if (true) {
         module.exports = require_scheduler_production_min();
@@ -575,9 +575,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react-dom/cjs/react-dom.production.min.js
+  // bundled/node_modules/react-dom/cjs/react-dom.production.min.js
   var require_react_dom_production_min = __commonJS({
-    "../../opt/files/node_modules/react-dom/cjs/react-dom.production.min.js"(exports) {
+    "bundled/node_modules/react-dom/cjs/react-dom.production.min.js"(exports) {
       "use strict";
       var aa = require_react();
       var ca2 = require_scheduler();
@@ -7180,9 +7180,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react-dom/index.js
+  // bundled/node_modules/react-dom/index.js
   var require_react_dom = __commonJS({
-    "../../opt/files/node_modules/react-dom/index.js"(exports, module) {
+    "bundled/node_modules/react-dom/index.js"(exports, module) {
       "use strict";
       function checkDCE() {
         if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -7206,9 +7206,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react-dom/client.js
+  // bundled/node_modules/react-dom/client.js
   var require_client = __commonJS({
-    "../../opt/files/node_modules/react-dom/client.js"(exports) {
+    "bundled/node_modules/react-dom/client.js"(exports) {
       "use strict";
       var m = require_react_dom();
       if (true) {
@@ -7237,9 +7237,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react/cjs/react-jsx-runtime.production.min.js
+  // bundled/node_modules/react/cjs/react-jsx-runtime.production.min.js
   var require_react_jsx_runtime_production_min = __commonJS({
-    "../../opt/files/node_modules/react/cjs/react-jsx-runtime.production.min.js"(exports) {
+    "bundled/node_modules/react/cjs/react-jsx-runtime.production.min.js"(exports) {
       "use strict";
       var f2 = require_react();
       var k2 = /* @__PURE__ */ Symbol.for("react.element");
@@ -7262,9 +7262,9 @@
     }
   });
 
-  // ../../opt/files/node_modules/react/jsx-runtime.js
+  // bundled/node_modules/react/jsx-runtime.js
   var require_jsx_runtime = __commonJS({
-    "../../opt/files/node_modules/react/jsx-runtime.js"(exports, module) {
+    "bundled/node_modules/react/jsx-runtime.js"(exports, module) {
       "use strict";
       if (true) {
         module.exports = require_react_jsx_runtime_production_min();
@@ -7277,10 +7277,10 @@
   // src/main.tsx
   var import_client = __toESM(require_client());
 
-  // ../../opt/files/kit/index.tsx
+  // ../..bundled component stylesheet/index.tsx
   var import_react22 = __toESM(require_react());
 
-  // ../../opt/files/kit/components.mjs
+  // ../..bundled component stylesheet/components.mjs
   var y = __toESM(require_react(), 1);
   var Je = __toESM(require_react(), 1);
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
@@ -7613,7 +7613,7 @@
   var ye = (0, import_react2.forwardRef)(({ label: e2, className: r, asChild: t = false, type: o = "button", ...s }, n) => (0, import_jsx_runtime3.jsx)(t ? E : "button", { ref: n, type: t ? void 0 : o, "aria-label": e2, title: e2, className: _("inline-flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded border-0 bg-transparent p-2 leading-none text-ds-ink transition-colors [transition-duration:120ms] hover:bg-ds-hover active:bg-ds-hoverStrong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ds-ink4 disabled:cursor-default disabled:bg-transparent disabled:text-ds-ink4 [&_svg]:h-4 [&_svg]:w-4", r), ...s }));
   ye.displayName = "DsIconButton";
 
-  // ../../opt/files/kit/library.mjs
+  // ../..bundled component stylesheet/library.mjs
   var import_react3 = __toESM(require_react(), 1);
   var import_react4 = __toESM(require_react(), 1);
   var import_react5 = __toESM(require_react(), 1);
@@ -7689,7 +7689,7 @@
       }) : window.classNames = a;
     })();
   });
-  var Ba = () => window.instinctFile;
+  var Ba = () => window.evaStandalone;
   function iu(e2, a) {
     let [t, o] = (0, import_react3.useState)({ scope: { key: e2, initialValue: a }, value: a, status: "loading", ready: false });
     t.scope.key !== e2 && o({ scope: { key: e2, initialValue: a }, value: a, status: "loading", ready: false });
@@ -8625,7 +8625,7 @@
   }
   var Bd = { idle: { icon: (0, import_jsx_runtime13.jsx)(Rd, {}), label: jo.label, shortLabel: "Buy this", variant: "active" }, sending: { icon: (0, import_jsx_runtime13.jsx)(oe2, { className: "file-spin", size: 16, strokeWidth: 2.25, "aria-hidden": "true" }), label: "Sending\u2026", variant: "disabled" }, sent: { icon: (0, import_jsx_runtime13.jsx)(Qe2, { size: 16, strokeWidth: 2.25, "aria-hidden": "true" }), label: "Sent to Instinct", shortLabel: "Sent", variant: "disabled" } };
 
-  // ../../opt/files/node_modules/react-router/dist/development/chunk-BV7QT456.mjs
+  // bundled/node_modules/react-router/dist/development/chunk-BV7QT456.mjs
   var React = __toESM(require_react(), 1);
   var React2 = __toESM(require_react(), 1);
   var React3 = __toESM(require_react(), 1);
@@ -11372,13 +11372,13 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     return matchPath(path.pathname, nextPath) != null || matchPath(path.pathname, currentPath) != null;
   }
 
-  // ../../opt/files/kit/index.tsx
+  // ../..bundled component stylesheet/index.tsx
   var import_jsx_runtime20 = __toESM(require_jsx_runtime());
   function RouteBridge() {
     const location = useLocation();
     const navigate = useNavigate();
     (0, import_react22.useEffect)(() => {
-      window.instinctFile.route(location.pathname + location.search + location.hash);
+      window.evaStandalone.route(location.pathname + location.search + location.hash);
     }, [location]);
     (0, import_react22.useEffect)(() => {
       const restore = (event) => navigate(event.detail, { replace: true });
@@ -11388,7 +11388,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     return null;
   }
   function FileRouter({ children }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(MemoryRouter, { initialEntries: [window.instinctFile.initialRoute], children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(MemoryRouter, { initialEntries: [window.evaStandalone.initialRoute], children: [
       /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(RouteBridge, {}),
       children
     ] });
