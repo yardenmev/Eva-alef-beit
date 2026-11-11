@@ -1,12 +1,11 @@
 # Eva Alef Beit - משחקי אותיות לאווה
 
-משחקי אינטרנט ללימוד הא"ב העברי, בשפע משחקים: שביל האותיות, רכבת האותיות ועוד.
+משחקי אינטרנט ללימוד הא"ב העברי, כולל שביל האותיות, רכבת האותיות ועוד.
 
 ## לשחק
-האתר חי ב-GitHub Pages: https://yardenmev.github.io/Eva-alef-beit/
+https://yardenmev.github.io/Eva-alef-beit/
 
-## מבנה הריפו
-- `index.html`, `main.js`, `assets/` - הגרסה הבנויה שהאתר מריץ (generation 14).
-- `src/` - קוד המקור (React + TypeScript): App.tsx, data.ts, audio.ts, אייקונים ותמונות.
+## קבצים
+`index.html`, `main.js` ו-`assets/` הם הגרסה הסטטית שהאתר מריץ. זו גרסה בנויה של האפליקציה, לא פרויקט מקור שאפשר לבנות מחדש.
 
-הגרסה פורסמה במקור גם בקישור: https://files.instinct.com/fdm9t42530o2
+ההתקדמות במשחק נשמרת במכשיר בדפדפן.
