@@ -31,5 +31,6 @@ import i28 from './icons/1f50a.svg';
 import i29 from './icons/1f507.svg';
 import i30 from './icons/26f0.svg';
 import i31 from './icons/26bd.svg';
-const icons:Record<string,string>={'⚽':i31,'🦁':i0,'🍌':i1,'🐪':i2,'🧸':i3,'🌹':i4,'🦓':i5,'🍆':i6,'💍':i7,'👧':i8,'🍋':i9,'🚗':i10,'🐆':i11,'🐎':i12,'🍅':i13,'🐘':i14,'🐦':i15,'🐒':i16,'🍎':i17,'☀️':i18,'🤖':i19,'🔎':i20,'🧠':i21,'🫧':i22,'🚂':i23,'🎁':i24,'🌟':i25,'🌷':i26,'✨':i27,'🔊':i28,'🔇':i29,'⛰️':i30};
+import i32 from './icons/1f9fa.svg';
+const icons:Record<string,string>={'⚽':i31,'🦁':i0,'🍌':i1,'🐪':i2,'🧸':i3,'🌹':i4,'🦓':i5,'🍆':i6,'💍':i7,'👧':i8,'🍋':i9,'🚗':i10,'🐆':i11,'🐎':i12,'🍅':i13,'🐘':i14,'🐦':i15,'🐒':i16,'🍎':i17,'☀️':i18,'🤖':i19,'🔎':i20,'🧠':i21,'🫧':i22,'🚂':i23,'🎁':i24,'🌟':i25,'🌷':i26,'✨':i27,'🔊':i28,'🔇':i29,'⛰️':i30,'🧺':i32};
 export function Emoji({value}:{value:string}){return icons[value]?<img className='emoji-image' src={icons[value]} alt='' aria-hidden='true'/>:<span>{value}</span>}

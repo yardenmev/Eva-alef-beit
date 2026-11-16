@@ -16,7 +16,9 @@ npm run publish-site # בונה ומעתיק את התוצאה לשורש הרי
 
 ## מבנה
 
-- `src/App.tsx` - כל המשחקים והמסכים
+- `src/App.tsx` - משחקי האותיות והמסכים הראשיים
+- `src/math/MathApp.tsx` - משחקי החשבון (ספירה, השוואה, חיבור וחיסור); נטען בנפרד כשפותחים אותם
+- `src/math/mathClips.ts` - הקלטות החשבון המאושרות (מוטמעות כ-data); `src/math/math.css` - העיצוב שלהם; `src/math/art/` - איורי הפירות והאריה
 - `src/data.ts` - האותיות, המילים והאמוג'י
 - `src/audio.ts`, `bubbleAudio.ts`, `retryAudio.ts` - ההקלטות המאושרות (מוטמעות כקבצי data)
 - `src/style.css` - עיצוב המשחקים; `src/ui.tsx` + `ui.css` - כרטיס, כפתורים, ניווט ושמירת כוכבים בדפדפן

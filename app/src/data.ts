@@ -12,7 +12,8 @@ export const games = [
  {id:'bubbles',icon:'🫧',title:'בועות של אותיות',detail:'מחפשות בנחת, בלי למהר'},
  {id:'train',icon:'🚂',title:'רכבת האותיות',detail:'איזו אות חסרה ברצף?'},
  {id:'mystery',icon:'🎁',title:'תיבת ההפתעות',detail:'בכל מתנה מסתתרת אות'},
- {id:'maze',icon:'🦁',title:'שביל האותיות',detail:'צועדים עם האריה, בכל צעד אות חדשה'}
+ {id:'maze',icon:'🦁',title:'שביל האותיות',detail:'צועדים עם האריה, בכל צעד אות חדשה'},
+ {id:'math',icon:'🧺',title:'משחקי חשבון',detail:'סופרים פירות, מוסיפים ומחסרים'}
 ];
 export function shuffle<T>(items:T[]):T[]{const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 export function pick<T>(items:T[]):T{return items[Math.floor(Math.random()*items.length)]}
