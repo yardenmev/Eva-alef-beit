@@ -8,8 +8,16 @@ import orange from './art/orange.svg';
 import strawberry from './art/strawberry.svg';
 import lion from './art/lion.svg';
 import speaker from './art/speaker.svg';
+import tomato from './art/tomato.svg';
+import cucumber from './art/cucumber.svg';
+import carrot from './art/carrot.svg';
+import {extra} from './extraClips';
 import {clips} from './mathClips';
 const fruitArt=[apple,pear,orange,strawberry];
+const mixArt=[apple,pear,orange,strawberry,tomato,cucumber,carrot];
+const mixRounds=[[2,3,4,5],[3,1,0,6],[1,2,2,5],[4,2,3,1],[2,2,4,6],[3,3,1,5],[1,4,2,4],[4,3,0,5],[2,1,6,3],[3,4,4,1]];
+const fallbackClip:Record<string,string>={mixQuestion:'question',eqQuestion:'addQuestion',mixHint:'addHint',mixRetry:'retry'};
+function mixChoices(t:number,a:number,b:number){const pool=Array.from(new Set([t-1,t+1,a,b,t+2])).filter(x=>x>=1&&x<=9&&x!==t);return mix([t,...mix(pool).slice(0,2)])}
 const sequences=[[2,1,3,2,3,1],[4,2,5,3,1,4],[6,8,7,9,10,5,3,8,10,7]];
 const comparePairs=[[1,3],[3,2],[2,4],[5,3],[4,1],[3,5],[4,5],[2,3]];
 const countKeys=['','one','two','three','four','five','six','seven','eight','nine','ten'];
@@ -18,13 +26,15 @@ function choices(n:number,stage:number){return mix([n,...mix(Array.from({length:
 export function MathApp(){return <Game/>}
 function Game(){
  const [progress,setProgress,saved]=useLocalState('picnic.progress.v2',{stage:0,round:0,compareRound:0,unlocked:0});
- const [mathProgress,setMathProgress,mathSaved]=useLocalState('picnic.arithmetic.v1',{addRound:0,subRound:0});
- const [screen,setScreen]=useState<'home'|'count'|'compare'|'add'|'sub'>('home');
+ const [mathProgress,setMathProgress,mathSaved]=useLocalState('picnic.arithmetic.v1',{addRound:0,subRound:0,mixRound:0,eqRound:0});
+ const [screen,setScreen]=useState<'home'|'count'|'compare'|'add'|'sub'|'mix'|'eq'>('home');
  const navigate=useNavigate();
  const [phase,setPhase]=useState<'ready'|'moving'|'after'>('ready');
  const phaseRef=useRef<'ready'|'moving'|'after'>('ready');
  const sceneTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const arith=screen==='add'||screen==='sub';
+ const mixed=screen==='mix'||screen==='eq';
+ const [mixSet,setMixSet]=useState<number[]>([2,3,4,5]);
  const [round,setRound]=useState(0);
  const [stage,setStage]=useState(0);
  const [n,setN]=useState(2);
@@ -49,7 +59,7 @@ function Game(){
  const epoch=useRef(0);
  const muteRef=useRef(false);
  const stop=()=>{epoch.current++;queue.current=[];busy.current=false;if(player.current){try{player.current.stop()}catch{}player.current=null}};
- const drain=async()=>{if(busy.current||muteRef.current)return;const key=queue.current.shift();if(!key)return;const src=clips[key];if(!src){setAudioError(true);return}busy.current=true;const token=epoch.current;const done=()=>{if(token!==epoch.current)return;busy.current=false;player.current=null;void drain()};try{if(!context.current)context.current=new AudioContext();const ctx=context.current;await ctx.resume();if(!decoded.current[key]){const raw=atob(src.split(',')[1]);const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));decoded.current[key]=await ctx.decodeAudioData(bytes.buffer)}if(token!==epoch.current)return;const node=ctx.createBufferSource();node.buffer=decoded.current[key];node.connect(ctx.destination);node.onended=done;player.current=node;node.start();setAudioError(false)}catch{setAudioError(true);done()}};
+ const drain=async()=>{if(busy.current||muteRef.current)return;const key=queue.current.shift();if(!key)return;const src=extra[key]??clips[key]??clips[fallbackClip[key]];if(!src){setAudioError(true);return}busy.current=true;const token=epoch.current;const done=()=>{if(token!==epoch.current)return;busy.current=false;player.current=null;void drain()};try{if(!context.current)context.current=new AudioContext();const ctx=context.current;await ctx.resume();if(!decoded.current[key]){const raw=atob(src.split(',')[1]);const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));decoded.current[key]=await ctx.decodeAudioData(bytes.buffer)}if(token!==epoch.current)return;const node=ctx.createBufferSource();node.buffer=decoded.current[key];node.connect(ctx.destination);node.onended=done;player.current=node;node.start();setAudioError(false)}catch{setAudioError(true);done()}};
  const say=(key:string,append=false)=>{if(muteRef.current)return;if(!append||!countingVoice.current)stop();countingVoice.current=append;queue.current.push(key);drain()};
  useEffect(()=>()=>{stop();void context.current?.close()},[]);
 
@@ -58,33 +68,39 @@ function Game(){
  const newCount=(index:number,level:number)=>{stop();clear();const seq=sequences[level],value=seq[index%seq.length];setScreen('count');setFruitType((index+level)%fruitArt.length);setRound(index);setN(value);setStage(level);setOptions(choices(value,level));setState('ask');say('question')};
  const newCompare=(index:number)=>{stop();clear();setScreen('compare');setFruitType(index%fruitArt.length);setRound(index);setPair(mix(comparePairs[index%comparePairs.length]));setState('ask');say('more')};
  const newArithmetic=(kind:'add'|'sub',index:number)=>{stop();clear();const start=kind==='add'?[2,1,3,4,2,3,1,4][index%8]:[3,2,4,5,3,5,2,4][index%8];const result=start+(kind==='add'?1:-1);setScreen(kind);setRound(index);setFruitType(index%fruitArt.length);setN(start);setPhase('ready');phaseRef.current='ready';setOptions(choices(result,1));setState('ask');say(kind+'Intro')};
+ const newMixed=(kind:'mix'|'eq',index:number)=>{stop();clear();const row=mixRounds[(index+(kind==='eq'?4:0))%mixRounds.length];setScreen(kind);setRound(index);setMixSet(row);setOptions(mixChoices(row[0]+row[1],row[0],row[1]));setState('ask');say(kind+'Question')};
  const animateChange=()=>{if(phaseRef.current!=='ready')return;stop();counted.current=new Set();setMarked([]);phaseRef.current='moving';setPhase('moving');sceneTimer.current=setTimeout(()=>{sceneTimer.current=null;phaseRef.current='after';setPhase('after');say(screen+'Question')},1400)};
  const replayScene=()=>{stop();clear();setState('ask');setPhase('ready');phaseRef.current='ready';say(screen+'Intro')};
- const replay=()=>say(arith?screen+(phase==='ready'?'Intro':'Question'):screen==='compare'?'more':'question');
+ const replay=()=>say(mixed?(screen==='mix'?'mixQuestion':'eqQuestion'):arith?screen+(phase==='ready'?'Intro':'Question'):screen==='compare'?'more':'question');
  const begin=()=>{if(saved.ready)newCount(progress.round,progress.stage)};
  const count=(side:number,index:number)=>{const id=side+'-'+index;if(answered.current||counted.current.has(id))return;counted.current.add(id);setMarked([...counted.current]);const amount=[...counted.current].filter(k=>k.startsWith(side+'-')).length;say(countKeys[amount],true)};
- const answer=(correct:boolean)=>{if(answered.current)return;if(correct){answered.current=true;const advance=screen==='count'&&stage<2&&round===sequences[stage].length-1;setState(advance?'advance':'success');if(screen==='count')remember(advance?{stage:stage+1,round:0,unlocked:Math.max(progress.unlocked,stage+1)}:{stage,round:round+1});else if(screen==='compare')remember({compareRound:round+1});else if(mathSaved.ready)setMathProgress({...mathProgress,[screen==='add'?'addRound':'subRound']:round+1});say('success');const advanceWhenQuiet=()=>{if(busy.current||queue.current.length){autoTimer.current=setTimeout(advanceWhenQuiet,100);return}autoTimer.current=null;if(screen==='add'||screen==='sub')newArithmetic(screen,round+1);else if(screen==='compare')newCompare(round+1);else if(advance)newCount(0,stage+1);else newCount(round+1,stage)};autoTimer.current=setTimeout(advanceWhenQuiet,3600)}else{setState('retry');say(arith?screen+'Retry':screen==='count'?'retry':'compareRetry')}};
+ const answer=(correct:boolean)=>{if(answered.current)return;if(correct){answered.current=true;const advance=screen==='count'&&stage<2&&round===sequences[stage].length-1;setState(advance?'advance':'success');if(screen==='count')remember(advance?{stage:stage+1,round:0,unlocked:Math.max(progress.unlocked,stage+1)}:{stage,round:round+1});else if(screen==='compare')remember({compareRound:round+1});else if(mathSaved.ready)setMathProgress({...mathProgress,[screen==='add'?'addRound':screen==='sub'?'subRound':screen==='mix'?'mixRound':'eqRound']:round+1});say('success');const advanceWhenQuiet=()=>{if(busy.current||queue.current.length){autoTimer.current=setTimeout(advanceWhenQuiet,100);return}autoTimer.current=null;if(screen==='add'||screen==='sub')newArithmetic(screen,round+1);else if(screen==='mix'||screen==='eq')newMixed(screen,round+1);else if(screen==='compare')newCompare(round+1);else if(advance)newCount(0,stage+1);else newCount(round+1,stage)};autoTimer.current=setTimeout(advanceWhenQuiet,3600)}else{setState('retry');say(mixed?'mixRetry':arith?screen+'Retry':screen==='count'?'retry':'compareRetry')}};
 
  const home=()=>{stop();setScreen('home');clear();setState('ask')};
  const toggle=()=>{stop();muteRef.current=!muteRef.current;setMuted(muteRef.current);setAudioError(false)};
  const fruits=(amount:number,side:number)=><div className="fruit-grid">{Array.from({length:amount},(_,i)=>{const id=side+'-'+i;return <button key={screen+'-'+round+'-'+stage+'-'+id} className={'fruit '+(marked.includes(id)?'counted':'')} onClick={()=>count(side,i)} aria-label={marked.includes(id)?'פרי שכבר ספרנו':'סופרים פרי'} aria-pressed={marked.includes(id)} disabled={answered.current}><img src={fruitArt[fruitType]} alt=""/>{marked.includes(id)&&<span className="check" aria-hidden="true">✓</span>}</button>})}</div>;
- const question=arith?(phase==='ready'?(screen==='add'?'מוכנה לעוד פרי?':'ניתן לאריה פרי אחד?'):(screen==='add'?'כמה פירות יש עכשיו?':'כמה פירות נשארו?')):screen==='compare'?'איפה יש יותר פירות?':'כמה פירות יש כאן?';
+ const question=mixed?(screen==='mix'?'כמה פירות יש ביחד?':'כמה יוצא ביחד?'):arith?(phase==='ready'?(screen==='add'?'מוכנה לעוד פרי?':'ניתן לאריה פרי אחד?'):(screen==='add'?'כמה פירות יש עכשיו?':'כמה פירות נשארו?')):screen==='compare'?'איפה יש יותר פירות?':'כמה פירות יש כאן?';
  const won=state==='success'||state==='advance';
  return <div className="picnic" dir="rtl">
  <nav className="m-toolbar" aria-label="ניווט במשחק"><button className="m-back" onClick={()=>{if(screen!=='home')home();else navigate('/')}}>{screen!=='home'?'→ למשחקי החשבון':'→ לכל המשחקים'}</button><button className="sound" onClick={toggle} aria-label={muted?'הפעלת קול':'השתקת קול'} aria-pressed={muted}>{muted?<span aria-hidden="true">♪ ×</span>:<img src={speaker} alt=""/>}</button></nav>
- <div className="m-eyebrow">חשבון עם אווה</div><header className="m-header"><h1>{screen==='add'?'סל הקסמים':screen==='sub'?'האריה רעב':screen==='compare'?'איפה יש יותר?':'הפיקניק של האריה'}</h1></header><p className="subtitle">{arith?(screen==='add'?'עוד פרי מגיע, והסל מתמלא':'פרי אחד לאריה, והשאר נשארים'):screen==='compare'?'פירות צבעוניים, כמויות מגלים':'מגלים מספרים, פרי אחרי פרי'}</p>
+ <div className="m-eyebrow">חשבון עם אווה</div><header className="m-header"><h1>{screen==='mix'?'שתיים ועוד שלוש':screen==='eq'?'תרגיל חיבור':screen==='add'?'סל הקסמים':screen==='sub'?'האריה רעב':screen==='compare'?'איפה יש יותר?':'הפיקניק של האריה'}</h1></header><p className="subtitle">{mixed?(screen==='mix'?'שני סוגי פירות ביחד':'סופרים, מחברים ובוחרים'):arith?(screen==='add'?'עוד פרי מגיע, והסל מתמלא':'פרי אחד לאריה, והשאר נשארים'):screen==='compare'?'פירות צבעוניים, כמויות מגלים':'מגלים מספרים, פרי אחרי פרי'}</p>
  {screen==='home'?<>
  <section className="m-welcome menu-welcome"><div className="hero"><img className="hero-lion" src={lion} alt="אריה מחייך"/><img className="hero-apple a" src={apple} alt=""/><img className="hero-apple b" src={pear} alt=""/></div><h2>מה נשחק היום?</h2><p>בוחרים משחק וסופרים יחד.</p></section>
  <div className="game-menu"><button className="game-choice" onClick={begin} disabled={!saved.ready}><span className="game-icon" aria-hidden="true">1 2 3</span><span><strong>סופרים לפיקניק</strong><small>{progress.round||progress.stage?'ממשיכים מהמקום שבו עצרנו':'מתחילים בכמויות קטנות'}</small></span><span aria-hidden="true">←</span></button>
  <button className="game-choice" onClick={()=>saved.ready&&newCompare(progress.compareRound)} disabled={!saved.ready}><span className="game-icon compare-icon" aria-hidden="true"><i/><i/><i/></span><span><strong>איפה יש יותר?</strong><small>סופרים בשני הצדדים ומשווים</small></span><span aria-hidden="true">←</span></button>
  <button className="game-choice" onClick={()=>newArithmetic('add',mathProgress.addRound)} disabled={!mathSaved.ready}><span className="game-icon" aria-hidden="true">עוד</span><span><strong>סל הקסמים</strong><small>עוד פרי מצטרף לסל</small></span><span aria-hidden="true">←</span></button>
- <button className="game-choice" onClick={()=>newArithmetic('sub',mathProgress.subRound)} disabled={!mathSaved.ready}><span className="game-icon" aria-hidden="true">נשאר</span><span><strong>האריה רעב</strong><small>פרי אחד לאריה, כמה נשארו?</small></span><span aria-hidden="true">←</span></button></div>
- <div className="levels" aria-label="בחירת טווח מספרים">{[3,5,10].map((max,i)=><button key={max} disabled={!saved.ready||i>progress.unlocked} onClick={()=>newCount(0,i)}>{i>progress.unlocked?'🔒 ':''}עד {max}</button>)}</div>
+ <button className="game-choice" onClick={()=>newArithmetic('sub',mathProgress.subRound)} disabled={!mathSaved.ready}><span className="game-icon" aria-hidden="true">נשאר</span><span><strong>האריה רעב</strong><small>פרי אחד לאריה, כמה נשארו?</small></span><span aria-hidden="true">←</span></button>
+ <button className="game-choice" onClick={()=>newMixed('mix',mathProgress.mixRound||0)} disabled={!mathSaved.ready}><span className="game-icon" aria-hidden="true">2+3</span><span><strong>שתיים ועוד שלוש</strong><small>שני סוגי פירות ביחד, כמה יש?</small></span><span aria-hidden="true">←</span></button>
+ <button className="game-choice" onClick={()=>newMixed('eq',mathProgress.eqRound||0)} disabled={!mathSaved.ready}><span className="game-icon" aria-hidden="true">=</span><span><strong>תרגיל חיבור</strong><small>רואים את התרגיל ובוחרים תשובה</small></span><span aria-hidden="true">←</span></button></div>
+ <p className="level-title">בוחרים טווח לספירה:</p><div className="levels" aria-label="בחירת טווח מספרים">{[3,5,10].map((max,i)=><button key={max} disabled={!saved.ready} onClick={()=>newCount(0,i)}>עד {max}</button>)}</div>
  <p className="storage-note">ההתקדמות נשמרת בדפדפן הזה בלבד.<br/>{saved.message}</p>
  </>:<>
  <section className={'m-play '+(screen==='compare'?'compare-play':'')} aria-label={arith?'מצטרפים ונפרדים':screen==='compare'?'השוואת כמויות':'ספירת פירות'}>
  <h2>{question}</h2><button className="replay" disabled={won||phase==='moving'&&arith} onClick={replay}><img src={speaker} alt=""/>שומעים שוב</button>
- {arith?<>
+ {mixed?<>
+{screen==='eq'&&<div className="equation" dir="ltr" aria-label={'תרגיל: '+mixSet[0]+' ועוד '+mixSet[1]}><span className="eq-term"><img src={mixArt[mixSet[2]]} alt=""/><b>{mixSet[0]}</b></span><span className="eq-sign">+</span><span className="eq-term"><img src={mixArt[mixSet[3]]} alt=""/><b>{mixSet[1]}</b></span><span className="eq-sign">=</span><span className={'eq-result'+(won?' done':'')}>{won?mixSet[0]+mixSet[1]:'?'}</span></div>}
+<div className="scene mix-scene" dir="ltr" aria-label="שני סוגי פירות"><div className="blanket"/>{[0,1].map(side=>{const c=marked.filter(k=>k.startsWith(side+'-')).length;return <React.Fragment key={side}>{side===1&&<span className="mix-plus" aria-hidden="true">+</span>}<div className="mix-group"><div className="mix-fruits">{Array.from({length:mixSet[side]},(_,i)=>{const id=side+'-'+i;return <button key={screen+'-'+round+'-'+id} className={'fruit '+(marked.includes(id)?'counted':'')} onClick={()=>count(side,i)} aria-label={marked.includes(id)?'פרי שכבר ספרנו':'סופרים פרי'} aria-pressed={marked.includes(id)} disabled={answered.current}><img src={mixArt[mixSet[2+side]]} alt=""/>{marked.includes(id)&&<span className="check" aria-hidden="true">✓</span>}</button>})}</div><div className={'mix-badge'+(c?' on':'')} aria-label={c?'ספרנו '+c:''}>{c||''}</div></div></React.Fragment>})}</div><p className="choose">סופרים כל סוג, ואז נוגעים במספר של הכל ביחד</p><div className="answers">{options.map(value=><button className={'number '+(won&&value===mixSet[0]+mixSet[1]?'correct':'')} key={value} onClick={()=>answer(value===mixSet[0]+mixSet[1])} disabled={won} aria-label={'המספר '+value}>{value}</button>)}</div>
+</>:arith?<>
  <div className={'arithmetic-scene '+screen+' phase-'+phase} aria-label={screen==='add'?'סל פירות':'צלחת פירות והאריה'}>
  <div className="scene-label">{screen==='add'?'הסל שלנו':'הצלחת שלנו'}</div>
  <div className={'arithmetic-fruits '+(screen==='add'?'basket':'plate')}>
@@ -99,7 +115,7 @@ function Game(){
  <div className={'m-feedback '+state} role="status" aria-live="polite">{state==='retry'?'בואי נספור יחד וננסה שוב':state==='advance'?'כל הכבוד! מוכנה לעוד פירות?':state==='success'?'כל הכבוד! הצלחת!':'אפשר לספור בקצב שלך'}</div>
 
  </section>
- <button className="lion-hint" disabled={won||arith&&phase==='moving'} onClick={()=>say(arith?(phase==='ready'?screen+'Intro':screen+'Hint'):screen==='compare'?'compareHint':'hint')} aria-label="עזרה מהאריה"><img src={lion} alt=""/><span>{arith?<>{phase==='ready'?'נוגעים בכפתור כדי להתחיל':screen==='add'?'סופרים את כל הפירות בסל':'סופרים רק מה שנשאר בצלחת'}</>:screen==='compare'?<>סופרים בכל צד<br/>ואז בוחרים איפה יש יותר</>:<>אפשר לגעת בכל פרי<br/>ולספור יחד איתי</>} <img src={speaker} alt=""/></span></button>
+ <button className="lion-hint" disabled={won||arith&&phase==='moving'} onClick={()=>say(mixed?'mixHint':arith?(phase==='ready'?screen+'Intro':screen+'Hint'):screen==='compare'?'compareHint':'hint')} aria-label="עזרה מהאריה"><img src={lion} alt=""/><span>{mixed?<>סופרים כל סוג לחוד<br/>ואז מחברים</>:arith?<>{phase==='ready'?'נוגעים בכפתור כדי להתחיל':screen==='add'?'סופרים את כל הפירות בסל':'סופרים רק מה שנשאר בצלחת'}</>:screen==='compare'?<>סופרים בכל צד<br/>ואז בוחרים איפה יש יותר</>:<>אפשר לגעת בכל פרי<br/>ולספור יחד איתי</>} <img src={speaker} alt=""/></span></button>
  </>}
  {audioError&&<p className="audio-error" role="alert">הקול לא הופעל. אפשר ללחוץ על ״שומעים שוב״ או להמשיך בלי קול.</p>}
  
